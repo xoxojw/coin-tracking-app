@@ -1,8 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
-
   // reset.css -- start
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -56,7 +54,9 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    font-family: 'Source Sans Pro', sans-serif, -apple-system;
+    font-family: 'Source Sans Pro', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; /* 옵션: 폰트 부드럽게 렌더링 */
+    -moz-osx-font-smoothing: grayscale; /* 옵션: 폰트 부드럽게 렌더링 */
     background-color: ${props => props.theme.bgColor};
     color: ${props => props.theme.textColor};
   }
