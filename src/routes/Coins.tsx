@@ -1,3 +1,4 @@
+import { ICoin } from "../config/global";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -5,39 +6,15 @@ import styled from "styled-components";
 import { fetchCoins } from "../libs/service/api";
 import { convertTimestamp } from "../libs/helper/date";
 
-interface ICoin {
-  id: string,
-  name: string,
-  symbol: string,
-  rank: number,
-  is_new: boolean,
-  is_active: boolean,
-  type: string,
-}
-
 const Coins = () => {
-  // 1. react-query 없이 coin api를 fetch온 코드
-  // const [coins, setCoins] = useState<ICoin[]>([]);
-  // const [isLoading, setIsLoading] = useState(true);
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await fetch("https://api.coinpaprika.com/v1/coins");
-  //     const json = await res.json();
-  //     // console.log("coin json => ", json); // 코인이 60000개나 있다고..?
-  //     setCoins(json.slice(0, 100));
-  //     setIsLoading(false);
-  //   })();
-  // }, [])
+  const { isLoading, data: coins } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
-  // 2. react-query 사용
-  const { isLoading, data: coins } = useQuery<ICoin[]>("allCoins", fetchCoins)
-  const [currentTimestamp, setCurrentTimestamp] = useState(Date.now());
-
+  // 현재 날짜, 시각 가져오기
+  const [currentTime, setCurrentTime] = useState(Date.now());
   useEffect(() => {
     const realTime = setInterval(() => {
-      setCurrentTimestamp(Date.now());
+      setCurrentTime(Date.now());
     }, 1000);
-
     return () => clearInterval(realTime);
   }, []);
 
@@ -46,7 +23,7 @@ const Coins = () => {
       <Container>
         <Header>
           <Title>Coins Rank</Title>
-          <NowIs>{convertTimestamp(currentTimestamp)}</NowIs>
+          <NowIs>{convertTimestamp(currentTime)}</NowIs>
         </Header>
         <Section>
           {isLoading ? (
@@ -74,6 +51,12 @@ const Coins = () => {
 
 export default Coins;
 
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+`;
+
 const Header = styled.header`
   height: 20vh;
   display: flex;
@@ -96,12 +79,6 @@ const Loader = styled.span`
   text-align: center;
   display: block;
   font-size: 24px;
-`;
-
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 600px;
-  margin: 0 auto;
 `;
 
 const Section = styled.section``;
