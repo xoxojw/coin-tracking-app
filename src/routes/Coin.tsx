@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, Switch, Route, useLocation, useParams, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
+import Price from "./Price";
+import Chart from "./Chart";
 
 interface RouteParams {
   coinId: string;
@@ -111,6 +113,8 @@ const Coin = () => {
   const { state } = useLocation<RouteState>();
   const [info, setInfo] = useState<IInfoData>();
   const [priceInfo, setPriceInfo] = useState<IPriceData>();
+  const priceMatch = useRouteMatch("/:coinId/price");
+  const chartMatch = useRouteMatch("/:coinId/chart");
   
   useEffect(() => {
     (async () => {
@@ -138,9 +142,52 @@ const Coin = () => {
           {loading ? (
             <Loader>Loading...</Loader>
           ) : (
-            <span>{ priceInfo?.quotes.USD.price }</span>
-          )
-          }
+            <>
+              <Overview>
+                <OverviewItem>
+                  <span>Rank</span>
+                  <span>{info?.rank}</span>
+                </OverviewItem>
+                <OverviewItem>
+                  <span>Symbol</span>
+                  <span>${info?.symbol}</span>
+                </OverviewItem>
+                <OverviewItem>
+                  <span>Open Source</span>
+                  <span>{info?.open_source ? "Yes" : "No"}</span>
+                </OverviewItem>
+              </Overview>
+              <Description>{info?.description}</Description>
+              <Overview>
+                <OverviewItem>
+                  <span>Total Suply</span>
+                  <span>{priceInfo?.total_supply}</span>
+                </OverviewItem>
+                <OverviewItem>
+                  <span>Max Supply</span>
+                  <span>{priceInfo?.max_supply}</span>
+                </OverviewItem>
+              </Overview>
+
+              <Tabs>
+                <Tab isActive={chartMatch !== null}>
+                  <Link to={`/${coinId}/chart`}>Chart</Link>
+                </Tab>
+                <Tab isActive={priceMatch !== null}>
+                  <Link to={`/${coinId}/price`}>Price</Link>  
+                </Tab>  
+              </Tabs>
+
+              <Switch>
+                <Route path={`/:coinId/price`}>
+                  <Price />
+                </Route>
+                <Route path={`/:coinId/chart`}>
+                  <Chart />
+                </Route>  
+              </Switch>  
+            </>
+          )}
         </Section>
       </Container>
     </>
@@ -175,3 +222,61 @@ const Header = styled.header`
 `;
 
 const Section = styled.section``;
+
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px 30px;
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.02);
+  }
+`;
+
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    color: ${props => props.theme.accentColor};
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+  padding: 5px;
+  text-align: justify;
+  line-height: 1.2;
+`;
+
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0px;
+  gap: 10px;
+`;
+
+const Tab = styled.span<{ isActive: boolean }>`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 0px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: ${props => props.isActive ? props.theme.accentColor : props.theme.textColor};
+  &:hover {
+    transform: scale(1.03);
+  }
+  a {
+    display: block;
+  }
+`;
