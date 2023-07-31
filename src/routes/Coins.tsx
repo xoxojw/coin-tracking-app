@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-interface CoinInterface {
+interface ICoin {
   id: string,
   name: string,
   symbol: string,
@@ -13,7 +13,7 @@ interface CoinInterface {
 }
 
 const Coins = () => {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
+  const [coins, setCoins] = useState<ICoin[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
