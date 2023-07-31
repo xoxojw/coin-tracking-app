@@ -1,142 +1,27 @@
-import { useEffect, useState } from "react";
-import { Link, Switch, Route, useLocation, useParams, useRouteMatch } from "react-router-dom";
-import styled from "styled-components";
+import { RouteParams, IInfoData, IPriceData } from "../config/global";
+import { Link, Switch, Route, useParams, useRouteMatch } from "react-router-dom";
 import Price from "./Price";
 import Chart from "./Chart";
 
-interface RouteParams {
-  coinId: string;
-}
-interface RouteState {
-  name: string;
-}
-interface IInfoData {
-  name:               string;
-  id:                 string;
-  symbol:             string;
-  rank:               number;
-  is_new:             boolean;
-  is_active:          boolean;
-  type:               string;
-  logo:               string;
-  tags:               ITag[];
-  team:               ITeam[];
-  description:        string;
-  message:            string;
-  open_source:        boolean;
-  started_at:         Date;
-  development_status: string;
-  hardware_wallet:    boolean;
-  proof_type:         string;
-  org_structure:      string;
-  hash_algorithm:     string;
-  links:              ILinks;
-  links_extended:     ILinksExtended[];
-  whitepaper:         IWhitepaper;
-  first_data_at:      Date;
-  last_data_at:       Date;
-}
-interface ILinks {
-  explorer:    string[];
-  facebook:    string[];
-  reddit:      string[];
-  source_code: string[];
-  website:     string[];
-  youtube:     string[];
-}
-interface ILinksExtended {
-  url:    string;
-  type:   string;
-  stats?: IStats;
-}
-interface IStats {
-  subscribers?:  number;
-  contributors?: number;
-  stars?:        number;
-  followers?:    number;
-}
-interface ITag {
-  id:           string;
-  name:         string;
-  coin_counter: number;
-  ico_counter:  number;
-}
-interface ITeam {
-  id:       string;
-  name:     string;
-  position: string;
-}
-interface IWhitepaper {
-  link:      string;
-  thumbnail: string;
-}
-interface IPriceData {
-  id:                 string;
-  name:               string;
-  symbol:             string;
-  rank:               number;
-  circulating_supply: number;
-  total_supply:       number;
-  max_supply:         number;
-  beta_value:         number;
-  first_data_at:      Date;
-  last_updated:       Date;
-  quotes:             IQuotes;
-}
-interface IQuotes {
-  USD: IUsd;
-}
-interface IUsd {
-  price:                  number;
-  volume_24h:             number;
-  volume_24h_change_24h:  number;
-  market_cap:             number;
-  market_cap_change_24h:  number;
-  percent_change_15m:     number;
-  percent_change_30m:     number;
-  percent_change_1h:      number;
-  percent_change_6h:      number;
-  percent_change_12h:     number;
-  percent_change_24h:     number;
-  percent_change_7d:      number;
-  percent_change_30d:     number;
-  percent_change_1y:      number;
-  ath_price:              number;
-  ath_date:               Date;
-  percent_from_price_ath: number;
-}
+import { useQuery } from "react-query";
+import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
+
+import styled from "styled-components";
 
 const Coin = () => {
-  const [loading, setLoading] = useState(true);
-  // interface 또는 const { coinId } = useParams<{ coinId: string; }>();
   const { coinId } = useParams<RouteParams>();
-  const { state } = useLocation<RouteState>();
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
-  
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      console.log(infoData);
-      setPriceInfo(priceData);
-      console.log(priceData);
-      setLoading(false);
-    })()
-  }, [coinId])
 
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(`${coinId}`));
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(["tickers", coinId], () => fetchCoinTickers(`${coinId}`));
+
+  const loading = infoLoading || tickersLoading;
   return (
     <>
       <Container>
         <Header>
-          <Title>{state?.name || "Loading..."}</Title>
+          <Title>{infoData?.name || "Loading..."}</Title>
         </Header>
         <Section>
           {loading ? (
@@ -146,26 +31,26 @@ const Coin = () => {
               <Overview>
                 <OverviewItem>
                   <span>Rank</span>
-                  <span>{info?.rank}</span>
+                  <span>{infoData?.rank}</span>
                 </OverviewItem>
                 <OverviewItem>
                   <span>Symbol</span>
-                  <span>${info?.symbol}</span>
+                  <span>${infoData?.symbol}</span>
                 </OverviewItem>
                 <OverviewItem>
                   <span>Open Source</span>
-                  <span>{info?.open_source ? "Yes" : "No"}</span>
+                  <span>{infoData?.open_source ? "Yes" : "No"}</span>
                 </OverviewItem>
               </Overview>
-              <Description>{info?.description}</Description>
+              <Description>{infoData?.description}</Description>
               <Overview>
                 <OverviewItem>
                   <span>Total Suply</span>
-                  <span>{priceInfo?.total_supply}</span>
+                  <span>{tickersData?.total_supply}</span>
                 </OverviewItem>
                 <OverviewItem>
                   <span>Max Supply</span>
-                  <span>{priceInfo?.max_supply}</span>
+                  <span>{tickersData?.max_supply}</span>
                 </OverviewItem>
               </Overview>
 
@@ -266,7 +151,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: ${props => props.isActive ? 700 : 300};
   background-color: rgba(0, 0, 0, 0.5);
   padding: 10px 0px;
   border-radius: 10px;

@@ -1,41 +1,36 @@
+import { ICoin } from "../config/global";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
 import styled from "styled-components";
-
-interface ICoin {
-  id: string,
-  name: string,
-  symbol: string,
-  rank: number,
-  is_new: boolean,
-  is_active: boolean,
-  type: string,
-}
+import { fetchCoins } from "../libs/service/api";
+import { convertTimestamp } from "../libs/helper/date";
 
 const Coins = () => {
-  const [coins, setCoins] = useState<ICoin[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { isLoading, data: coins } = useQuery<ICoin[]>("allCoins", fetchCoins);
+
+  // 현재 날짜, 시각 가져오기
+  const [currentTime, setCurrentTime] = useState(Date.now());
   useEffect(() => {
-    (async () => {
-      const res = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await res.json();
-      // console.log("coin json => ", json); // 코인이 60000개나 있다고..?
-      setCoins(json.slice(0, 100));
-      setLoading(false);
-    })();
-  }, [])
+    const realTime = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+    return () => clearInterval(realTime);
+  }, []);
+
   return (
     <>
       <Container>
         <Header>
           <Title>Coins Rank</Title>
+          <NowIs>{convertTimestamp(currentTime)}</NowIs>
         </Header>
         <Section>
-          {loading ? (
+          {isLoading ? (
             <Loader>Loading...</Loader>
           ) : (
             <CoinsList>
-            {coins.map(coin => (
+            {coins?.slice(0, 100).map(coin => (
               <Coin key={coin.id}>
                 {/* <CoinRank>{coin.rank}</CoinRank> */}
                 <Link to={{
@@ -56,29 +51,34 @@ const Coins = () => {
 
 export default Coins;
 
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+`;
+
+const Header = styled.header`
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Title = styled.h1`
   color: ${props => props.theme.accentColor};
   font-size: 48px;
   font-weight: 700;
 `;
 
+const NowIs = styled.div`
+  margin-top: 20px;
+`
+
 const Loader = styled.span`
   text-align: center;
   display: block;
   font-size: 24px;
-`;
-
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const Header = styled.header`
-  height: 10vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Section = styled.section``;
