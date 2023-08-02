@@ -2,6 +2,7 @@ import { RouteParams, IInfoData, IPriceData } from "../config/global";
 import { Link, Switch, Route, useParams, useRouteMatch } from "react-router-dom";
 import Price from "./Price";
 import Chart from "./Chart";
+import ArrowLeftFillIcon from "remixicon-react/ArrowLeftFillIcon"
 
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
@@ -21,7 +22,9 @@ const Coin = () => {
     <>
       <Container>
         <Header>
+          <HomeLink to={`/`}><BackToHomeIcon /></HomeLink>
           <Title>{infoData?.name || "Loading..."}</Title>
+          <EmptyDiv />
         </Header>
         <Section>
           {loading ? (
@@ -56,20 +59,24 @@ const Coin = () => {
 
               <Tabs>
                 <Tab isActive={chartMatch !== null}>
-                  <Link to={`/${coinId}/chart`}>Chart</Link>
+                  <Link to={`/${coinId}/chart`}>
+                      Chart
+                  </Link>
                 </Tab>
                 <Tab isActive={priceMatch !== null}>
-                  <Link to={`/${coinId}/price`}>Price</Link>  
+                  <Link to={`/${coinId}/price`}>
+                    Price
+                  </Link>  
                 </Tab>  
               </Tabs>
 
               <Switch>
+                <Route path={`/:coinId/chart`}>
+                    <Chart coinId={coinId} />
+                </Route> 
                 <Route path={`/:coinId/price`}>
                   <Price />
-                </Route>
-                <Route path={`/:coinId/chart`}>
-                  <Chart />
-                </Route>  
+                </Route> 
               </Switch>  
             </>
           )}
@@ -81,10 +88,10 @@ const Coin = () => {
 
 export default Coin;
 
-const Title = styled.h1`
-  color: ${props => props.theme.accentColor};
-  font-size: 48px;
-  font-weight: 700;
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 600px;
+  margin: 0 auto;
 `;
 
 const Loader = styled.span`
@@ -93,18 +100,29 @@ const Loader = styled.span`
   font-size: 24px;
 `;
 
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
 const Header = styled.header`
   height: 10vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 `;
+
+const BackToHomeIcon = styled(ArrowLeftFillIcon)`
+  color: ${props => props.theme.accentColor2};
+`
+
+const Title = styled.h1`
+  color: ${props => props.theme.accentColor};
+  font-size: 48px;
+  font-weight: 700;
+`;
+
+const HomeLink = styled(Link)`
+  color: ${(props) => props.theme.textColor};
+  font-size: 16px;
+`;
+
+const EmptyDiv = styled.div``
 
 const Section = styled.section``;
 
