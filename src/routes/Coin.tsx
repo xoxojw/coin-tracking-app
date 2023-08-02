@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
 
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 const Coin = () => {
   const { coinId } = useParams<RouteParams>();
@@ -28,6 +29,9 @@ const Coin = () => {
   return (
     <>
       <Container>
+        <Helmet>
+          <title>{(infoData?.name || "Loading...") + ` | Crypto Tracker`}</title>
+        </Helmet>
         <Header>
           <Link to={`/`}><BackToHomeIcon size={36} /></Link>
           <Title>{infoData?.name || "Loading..."}</Title>

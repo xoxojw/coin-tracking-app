@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { fetchCoins } from "../libs/service/api";
 import { convertTimestamp } from "../libs/helper/date";
+import { Helmet } from "react-helmet";
 
 const Coins = () => {
   const { isLoading, data: coins } = useQuery<ICoin[]>("allCoins", fetchCoins);
@@ -21,8 +22,11 @@ const Coins = () => {
   return (
     <>
       <Container>
+        <Helmet>
+          <title>Coins Ranking | Crypto Tracker</title>
+        </Helmet>
         <Header>
-          <Title>Coins Rank</Title>
+          <Title>Crypto Tracker</Title>
           <NowIs>{convertTimestamp(currentTime)}</NowIs>
         </Header>
         <Section>
@@ -86,21 +90,22 @@ const Section = styled.section``;
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
-  color: ${props => props.theme.bgColor};
+  background-color: rgba(0, 0, 0, 0.5);
+  color: ${props => props.theme.textColor};
   margin-bottom: 10px;
   border-radius: 10px;
   display: block;
   align-items: center;
   a {
     padding: 20px;
-    transition: color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
   }
   &:hover {
     a {
       color: ${props => props.theme.accentColor};
+      transform: scale(1.01);
     }
   }
 `;
