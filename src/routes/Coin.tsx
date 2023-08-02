@@ -17,6 +17,13 @@ const Coin = () => {
   const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(`${coinId}`));
   const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(["tickers", coinId], () => fetchCoinTickers(`${coinId}`));
 
+  const price = tickersData?.quotes.USD.price;
+
+  const formattedPrice = price?.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: price % 1 === 0 ? 0 : 3,
+  });
+
   const loading = infoLoading || tickersLoading;
   return (
     <>
@@ -41,8 +48,8 @@ const Coin = () => {
                   <span>${infoData?.symbol}</span>
                 </OverviewItem>
                 <OverviewItem>
-                  <span>Open Source</span>
-                  <span>{infoData?.open_source ? "Yes" : "No"}</span>
+                  <span>Price</span>
+                  <span>{`$${formattedPrice}`}</span>
                 </OverviewItem>
               </Overview>
               <Description>{infoData?.description}</Description>
