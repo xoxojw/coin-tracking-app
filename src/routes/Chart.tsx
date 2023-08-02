@@ -19,7 +19,7 @@ interface IHistoryData {
 }
 
 const Chart = ({ coinId }: ChartProps) => {
-  console.log(coinId);
+  // console.log(coinId);
   const { isLoading, data } = useQuery<IHistoryData[]>(["history", coinId], () => fetchCoinHistory(`${coinId}`))
   return (
     <div>
