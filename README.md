@@ -1,0 +1,2 @@
+<img src="https://github.com/xoxojw/coin-tracking-app/assets/124491335/ac310867-5f94-468a-bf81-9e9afc1d9105" />
+<img src="https://github.com/xoxojw/coin-tracking-app/assets/124491335/accc45e7-4ba2-4725-9ebe-fd9e97e854b7" />
