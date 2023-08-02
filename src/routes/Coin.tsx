@@ -2,7 +2,7 @@ import { RouteParams, IInfoData, IPriceData } from "../config/global";
 import { Link, Switch, Route, useParams, useRouteMatch } from "react-router-dom";
 import Price from "./Price";
 import Chart from "./Chart";
-import ArrowLeftFillIcon from "remixicon-react/ArrowLeftFillIcon"
+import ArrowLeftCircleLineIcon from "remixicon-react/ArrowLeftCircleLineIcon"
 
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
@@ -22,7 +22,7 @@ const Coin = () => {
     <>
       <Container>
         <Header>
-          <HomeLink to={`/`}><BackToHomeIcon /></HomeLink>
+          <Link to={`/`}><BackToHomeIcon size={36} /></Link>
           <Title>{infoData?.name || "Loading..."}</Title>
           <EmptyDiv />
         </Header>
@@ -107,19 +107,18 @@ const Header = styled.header`
   align-items: center;
 `;
 
-const BackToHomeIcon = styled(ArrowLeftFillIcon)`
-  color: ${props => props.theme.accentColor2};
+const BackToHomeIcon = styled(ArrowLeftCircleLineIcon)`
+  color: #9f9f9f;
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
 `
 
 const Title = styled.h1`
   color: ${props => props.theme.accentColor};
   font-size: 48px;
   font-weight: 700;
-`;
-
-const HomeLink = styled(Link)`
-  color: ${(props) => props.theme.textColor};
-  font-size: 16px;
 `;
 
 const EmptyDiv = styled.div``
@@ -170,11 +169,12 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-transform: uppercase;
   font-size: 12px;
   font-weight: ${props => props.isActive ? 700 : 300};
-  background-color: rgba(0, 0, 0, 0.5);
   padding: 10px 0px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  background-color: 
+  ${props => props.isActive ? "#0000007f;" : "#0000004f;"};
   color: ${props => props.isActive ? props.theme.accentColor : props.theme.textColor};
   &:hover {
     transform: scale(1.03);
