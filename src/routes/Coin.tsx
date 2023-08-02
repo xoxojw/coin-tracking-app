@@ -2,6 +2,7 @@ import { RouteParams, IInfoData, IPriceData } from "../config/global";
 import { Link, Switch, Route, useParams, useRouteMatch } from "react-router-dom";
 import Price from "./Price";
 import Chart from "./Chart";
+import ArrowLeftCircleLineIcon from "remixicon-react/ArrowLeftCircleLineIcon"
 
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
@@ -16,12 +17,21 @@ const Coin = () => {
   const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(`${coinId}`));
   const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(["tickers", coinId], () => fetchCoinTickers(`${coinId}`));
 
+  const price = tickersData?.quotes.USD.price;
+
+  const formattedPrice = price?.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: price % 1 === 0 ? 0 : 3,
+  });
+
   const loading = infoLoading || tickersLoading;
   return (
     <>
       <Container>
         <Header>
+          <Link to={`/`}><BackToHomeIcon size={36} /></Link>
           <Title>{infoData?.name || "Loading..."}</Title>
+          <EmptyDiv />
         </Header>
         <Section>
           {loading ? (
@@ -38,8 +48,8 @@ const Coin = () => {
                   <span>${infoData?.symbol}</span>
                 </OverviewItem>
                 <OverviewItem>
-                  <span>Open Source</span>
-                  <span>{infoData?.open_source ? "Yes" : "No"}</span>
+                  <span>Price</span>
+                  <span>{`$${formattedPrice}`}</span>
                 </OverviewItem>
               </Overview>
               <Description>{infoData?.description}</Description>
@@ -56,20 +66,24 @@ const Coin = () => {
 
               <Tabs>
                 <Tab isActive={chartMatch !== null}>
-                  <Link to={`/${coinId}/chart`}>Chart</Link>
+                  <Link to={`/${coinId}/chart`}>
+                      Chart
+                  </Link>
                 </Tab>
                 <Tab isActive={priceMatch !== null}>
-                  <Link to={`/${coinId}/price`}>Price</Link>  
+                  <Link to={`/${coinId}/price`}>
+                    Price
+                  </Link>  
                 </Tab>  
               </Tabs>
 
               <Switch>
+                <Route path={`/:coinId/chart`}>
+                    <Chart coinId={coinId} />
+                </Route> 
                 <Route path={`/:coinId/price`}>
                   <Price />
-                </Route>
-                <Route path={`/:coinId/chart`}>
-                  <Chart />
-                </Route>  
+                </Route> 
               </Switch>  
             </>
           )}
@@ -81,10 +95,10 @@ const Coin = () => {
 
 export default Coin;
 
-const Title = styled.h1`
-  color: ${props => props.theme.accentColor};
-  font-size: 48px;
-  font-weight: 700;
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 600px;
+  margin: 0 auto;
 `;
 
 const Loader = styled.span`
@@ -93,18 +107,28 @@ const Loader = styled.span`
   font-size: 24px;
 `;
 
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
 const Header = styled.header`
   height: 10vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 `;
+
+const BackToHomeIcon = styled(ArrowLeftCircleLineIcon)`
+  color: #9f9f9f;
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
+`
+
+const Title = styled.h1`
+  color: ${props => props.theme.accentColor};
+  font-size: 48px;
+  font-weight: 700;
+`;
+
+const EmptyDiv = styled.div``
 
 const Section = styled.section``;
 
@@ -152,11 +176,12 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-transform: uppercase;
   font-size: 12px;
   font-weight: ${props => props.isActive ? 700 : 300};
-  background-color: rgba(0, 0, 0, 0.5);
   padding: 10px 0px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  background-color: 
+  ${props => props.isActive ? "#0000007f;" : "#0000004f;"};
   color: ${props => props.isActive ? props.theme.accentColor : props.theme.textColor};
   &:hover {
     transform: scale(1.03);
