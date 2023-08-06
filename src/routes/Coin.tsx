@@ -7,6 +7,8 @@ import ArrowLeftCircleLineIcon from "remixicon-react/ArrowLeftCircleLineIcon"
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../libs/service/api";
 
+import { thousandsCommaFormatter } from "../libs/helper/comma";
+
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
 
@@ -18,12 +20,7 @@ const Coin = () => {
   const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(`${coinId}`));
   const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(["tickers", coinId], () => fetchCoinTickers(`${coinId}`));
 
-  const price = tickersData?.quotes.USD.price;
-
-  const formattedPrice = price?.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: price % 1 === 0 ? 0 : 3,
-  });
+  const price = tickersData?.quotes.USD.price || 0;
 
   const loading = infoLoading || tickersLoading;
   return (
@@ -53,18 +50,18 @@ const Coin = () => {
                 </OverviewItem>
                 <OverviewItem>
                   <span>Price</span>
-                  <span>{`$${formattedPrice}`}</span>
+                  <span>{`$${thousandsCommaFormatter(price)}`}</span>
                 </OverviewItem>
               </Overview>
               <Description>{infoData?.description}</Description>
               <Overview>
                 <OverviewItem>
-                  <span>Total Suply</span>
-                  <span>{tickersData?.total_supply}</span>
+                  <span>Total Supply</span>
+                  <span>{thousandsCommaFormatter(tickersData?.total_supply || 0)}</span>
                 </OverviewItem>
                 <OverviewItem>
                   <span>Max Supply</span>
-                  <span>{tickersData?.max_supply}</span>
+                  <span>{thousandsCommaFormatter(tickersData?.max_supply || 0)}</span>
                 </OverviewItem>
               </Overview>
 
@@ -86,7 +83,7 @@ const Coin = () => {
                     <Chart coinId={coinId} />
                 </Route> 
                 <Route path={`/:coinId/price`}>
-                  <Price />
+                  <Price coinId={coinId} />
                 </Route> 
               </Switch>  
             </>
