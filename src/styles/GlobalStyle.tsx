@@ -53,8 +53,15 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
   body {
-    font-family: 'Source Sans Pro', system-ui, sans-serif;
+    font-family: 'Pretendard-Regular', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased; /* 옵션: 폰트 부드럽게 렌더링 */
     -moz-osx-font-smoothing: grayscale; /* 옵션: 폰트 부드럽게 렌더링 */
     background-color: ${props => props.theme.bgColor};
