@@ -1,11 +1,12 @@
-import { ICoin } from "../config/global";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
-import styled from "styled-components";
 import { fetchCoins } from "../libs/service/api";
 import { convertTimestamp } from "../libs/helper/date";
 import { Helmet } from "react-helmet";
+
+import { ICoin } from "../config/global";
+import * as S from "../styles/Coins.style";
 
 const Coins = () => {
   const { isLoading, data: coins } = useQuery<ICoin[]>("allCoins", fetchCoins);
@@ -21,97 +22,36 @@ const Coins = () => {
 
   return (
     <>
-      <Container>
+      <S.Container>
         <Helmet>
           <title>Coins Ranking | Crypto Tracker</title>
         </Helmet>
-        <Header>
-          <Title>Crypto Tracker</Title>
-          <NowIs>{convertTimestamp(currentTime)}</NowIs>
-        </Header>
-        <Section>
+        <S.Header>
+          <S.Title>Crypto Tracker</S.Title>
+          <S.NowIs>{convertTimestamp(currentTime)}</S.NowIs>
+        </S.Header>
+        <S.Section>
           {isLoading ? (
-            <Loader>Loading...</Loader>
+            <S.Loader>Loading...</S.Loader>
           ) : (
-            <CoinsList>
+            <S.CoinsList>
             {coins?.slice(0, 100).map(coin => (
-              <Coin key={coin.id}>
+              <S.Coin key={coin.id}>
                 {/* <CoinRank>{coin.rank}</CoinRank> */}
                 <Link to={{
                   pathname: `/${coin.id}`,
                   state: { name: coin.name },
                 }}>
-                  <CoinImg src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+                  <S.CoinImg src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                   {coin.name} &rarr;
                 </Link>
-              </Coin>
+              </S.Coin>
             ))}
-          </CoinsList>)}
-        </Section>
-      </Container>
+          </S.CoinsList>)}
+        </S.Section>
+      </S.Container>
     </>
   );
 };
 
 export default Coins;
-
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 480px;
-  margin: 0 auto;
-`;
-
-const Header = styled.header`
-  height: 20vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  color: ${props => props.theme.accentColor};
-  font-size: 48px;
-  font-weight: 700;
-`;
-
-const NowIs = styled.div`
-  margin-top: 20px;
-`
-
-const Loader = styled.span`
-  text-align: center;
-  display: block;
-  font-size: 24px;
-`;
-
-const Section = styled.section``;
-
-const CoinsList = styled.ul``;
-
-const Coin = styled.li`
-  background-color: rgba(0, 0, 0, 0.5);
-  color: ${props => props.theme.textColor};
-  margin-bottom: 10px;
-  border-radius: 10px;
-  display: block;
-  align-items: center;
-  a {
-    padding: 20px;
-    transition: all 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-  }
-  &:hover {
-    a {
-      color: ${props => props.theme.accentColor};
-      transform: scale(1.01);
-    }
-  }
-`;
-
-const CoinImg = styled.img`
-  width: 35px;
-  height: 35px;
-  margin-right: 10px;
-`
