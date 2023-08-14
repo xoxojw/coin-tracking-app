@@ -2,11 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './styles/theme';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import App from './App';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 
@@ -16,9 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
+      <App />
       <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   </React.StrictMode>
