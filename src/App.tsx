@@ -1,23 +1,26 @@
-import { useState } from "react";
 import { ThemeProvider } from 'styled-components';
 import { darkTheme, lightTheme } from './styles/theme';
 import GlobalStyle from "./styles/GlobalStyle";
 import Router from "./routes/Router";
 
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from './recoil/atoms';
+
 import styled from "styled-components";
 import ToggleButton from "react-dark-mode-toggle";
 
 const App = () => {
-  const [isDark, setIsDark] = useState(false);
-  const toggleDark = () => setIsDark(current => !current);
+  const isDark = useRecoilValue(isDarkAtom);
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom(prev => !prev)
   return (
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
         <GlobalStyle />
         <DarkModeToggleBtn
-          onChange={toggleDark}
+          onChange={toggleDarkAtom}
           checked={isDark}
-          size={60}
+          size={50}
           speed={1.5}
         />
         <Router />
@@ -30,6 +33,6 @@ export default App;
 
 const DarkModeToggleBtn = styled(ToggleButton)`
   position: absolute;
-  top: 2vh;
-  right: 2vh;
+  top: 3vh;
+  right: 3%;
 `
