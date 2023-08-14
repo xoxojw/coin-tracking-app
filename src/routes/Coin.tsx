@@ -11,6 +11,7 @@ import { thousandsCommaFormatter } from "../libs/helper/comma";
 import { Helmet } from "react-helmet";
 
 import * as S from "../styles/Coin.style";
+import Loading from "../pages/Loading";
 
 const Coin = () => {
   const { coinId } = useParams<RouteParams>();
@@ -23,6 +24,9 @@ const Coin = () => {
   const price = tickersData?.quotes.USD.price || 0;
 
   const loading = infoLoading || tickersLoading;
+  
+  if (loading) <Loading />
+
   return (
     <>
       <S.Container>
@@ -35,59 +39,53 @@ const Coin = () => {
           <S.EmptyDiv />
         </S.Header>
         <S.Section>
-          {loading ? (
-            <S.Loader>Loading...</S.Loader>
-          ) : (
-            <>
-              <S.Overview>
-                <S.OverviewItem>
-                  <span>Rank</span>
-                  <span>{infoData?.rank}</span>
-                </S.OverviewItem>
-                <S.OverviewItem>
-                  <span>Symbol</span>
-                  <span>${infoData?.symbol}</span>
-                </S.OverviewItem>
-                <S.OverviewItem>
-                  <span>Price</span>
-                  <span>{`$${thousandsCommaFormatter(price)}`}</span>
-                </S.OverviewItem>
-              </S.Overview>
-              <S.Description>{infoData?.description}</S.Description>
-              <S.Overview>
-                <S.OverviewItem>
-                  <span>Total Supply</span>
-                  <span>{thousandsCommaFormatter(tickersData?.total_supply || 0)}</span>
-                </S.OverviewItem>
-                <S.OverviewItem>
-                  <span>Max Supply</span>
-                  <span>{thousandsCommaFormatter(tickersData?.max_supply || 0)}</span>
-                </S.OverviewItem>
-              </S.Overview>
+          <S.Overview>
+            <S.OverviewItem>
+              <span>Rank</span>
+              <span>{infoData?.rank}</span>
+            </S.OverviewItem>
+            <S.OverviewItem>
+              <span>Symbol</span>
+              <span>${infoData?.symbol}</span>
+            </S.OverviewItem>
+            <S.OverviewItem>
+              <span>Price</span>
+              <span>{`$${thousandsCommaFormatter(price)}`}</span>
+            </S.OverviewItem>
+          </S.Overview>
+          <S.Description>{infoData?.description}</S.Description>
+          <S.Overview>
+            <S.OverviewItem>
+              <span>Total Supply</span>
+              <span>{thousandsCommaFormatter(tickersData?.total_supply || 0)}</span>
+            </S.OverviewItem>
+            <S.OverviewItem>
+              <span>Max Supply</span>
+              <span>{thousandsCommaFormatter(tickersData?.max_supply || 0)}</span>
+            </S.OverviewItem>
+          </S.Overview>
 
-              <S.Tabs>
-                <S.Tab isActive={chartMatch !== null}>
-                  <Link to={`/${coinId}/chart`}>
-                      Chart
-                  </Link>
-                </S.Tab>
-                <S.Tab isActive={priceMatch !== null}>
-                  <Link to={`/${coinId}/price`}>
-                    Price
-                  </Link>  
-                </S.Tab>  
-              </S.Tabs>
+          <S.Tabs>
+            <S.Tab isActive={chartMatch !== null}>
+              <Link to={`/${coinId}/chart`}>
+                  Chart
+              </Link>
+            </S.Tab>
+            <S.Tab isActive={priceMatch !== null}>
+              <Link to={`/${coinId}/price`}>
+                Price
+              </Link>  
+            </S.Tab>  
+          </S.Tabs>
 
-              <Switch>
-                <Route path={`/:coinId/chart`}>
-                    <Chart coinId={coinId} />
-                </Route> 
-                <Route path={`/:coinId/price`}>
-                  <Price coinId={coinId} />
-                </Route> 
-              </Switch>  
-            </>
-          )}
+          <Switch>
+            <Route path={`/:coinId/chart`}>
+                <Chart coinId={coinId} />
+            </Route> 
+            <Route path={`/:coinId/price`}>
+              <Price coinId={coinId} />
+            </Route> 
+          </Switch>
         </S.Section>
       </S.Container>
     </>

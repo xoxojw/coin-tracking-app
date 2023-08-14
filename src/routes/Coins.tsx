@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { fetchCoins } from "../libs/service/api";
 import { convertTimestamp } from "../libs/helper/date";
 import { Helmet } from "react-helmet";
+import Loading from "../pages/Loading";
 
 import { ICoin } from "../config/global";
 import * as S from "../styles/Coins.style";
@@ -20,6 +21,8 @@ const Coins = () => {
     return () => clearInterval(realTime);
   }, []);
 
+  if (isLoading) <Loading />
+
   return (
     <>
       <S.Container>
@@ -31,23 +34,21 @@ const Coins = () => {
           <S.NowIs>{convertTimestamp(currentTime)}</S.NowIs>
         </S.Header>
         <S.Section>
-          {isLoading ? (
-            <S.Loader>Loading...</S.Loader>
-          ) : (
-            <S.CoinsList>
-            {coins?.slice(0, 100).map(coin => (
-              <S.Coin key={coin.id}>
-                {/* <CoinRank>{coin.rank}</CoinRank> */}
-                <Link to={{
-                  pathname: `/${coin.id}`,
-                  state: { name: coin.name },
-                }}>
-                  <S.CoinImg src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
-                  {coin.name} &rarr;
-                </Link>
-              </S.Coin>
-            ))}
-          </S.CoinsList>)}
+          <S.CoinsList>
+          {coins?.slice(0, 100).map(coin => (
+            <S.Coin key={coin.id}>
+              {/* <CoinRank>{coin.rank}</CoinRank> */}
+              <Link to={{
+                pathname: `/${coin.id}`,
+                state: { name: coin.name },
+              }}>
+                <S.CoinImg src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+                {coin.name} &rarr;
+              </Link>
+            </S.Coin>
+            ))
+          }
+          </S.CoinsList>
         </S.Section>
       </S.Container>
     </>
