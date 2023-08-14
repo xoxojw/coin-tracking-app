@@ -2,7 +2,8 @@ import { useQuery } from "react-query";
 import { IPriceData } from "../config/global";
 import { fetchCoinTickers } from "../libs/service/api";
 import { thousandsCommaFormatter } from "../libs/helper/comma";
-import styled from "styled-components";
+
+import * as S from "../styles/Price.style";
 
 interface PriceProps {
   coinId: string;
@@ -22,31 +23,31 @@ const Price = ({ coinId }: PriceProps) => {
         "Loading Price..."
       ) : (
         <>
-          <PriceTitle>Price Information</PriceTitle>
-          <PriceTableWrapper>
-            <TableContainer>
+          <S.PriceTitle>Price Information</S.PriceTitle>
+          <S.PriceTableWrapper>
+            <S.TableContainer>
               <thead>
-                <TableRow>
-                  <TableHeader>가격</TableHeader>
-                  <TableHeader>1시간</TableHeader>
-                  <TableHeader>24시간</TableHeader>
-                  <TableHeader>주간</TableHeader>
-                  <TableHeader>월간</TableHeader>
-                  <TableHeader>연간</TableHeader>
-                </TableRow>
+                <S.TableRow>
+                  <S.TableHeader>Price</S.TableHeader>
+                  <S.TableHeader>1h</S.TableHeader>
+                  <S.TableHeader>24h</S.TableHeader>
+                  <S.TableHeader>Week</S.TableHeader>
+                  <S.TableHeader>Month</S.TableHeader>
+                  <S.TableHeader>Year</S.TableHeader>
+                </S.TableRow>
               </thead>
               <tbody>
-                <TableRow>
-                  <TableData>${thousandsCommaFormatter(priceData?.price || 0)}</TableData>
-                  <TableData>{`${priceData?.percent_change_1h}%`}</TableData>
-                  <TableData>{`${priceData?.percent_change_24h}%`}</TableData>
-                  <TableData>{`${priceData?.percent_change_7d}%`}</TableData>
-                  <TableData>{`${priceData?.percent_change_30d}%`}</TableData>
-                  <TableData>{`${priceData?.percent_change_1y}%`}</TableData>
-                </TableRow>
+                <S.TableRow>
+                  <S.TableData>${thousandsCommaFormatter(priceData?.price || 0)}</S.TableData>
+                  <S.TableData>{`${priceData?.percent_change_1h}%`}</S.TableData>
+                  <S.TableData>{`${priceData?.percent_change_24h}%`}</S.TableData>
+                  <S.TableData>{`${priceData?.percent_change_7d}%`}</S.TableData>
+                  <S.TableData>{`${priceData?.percent_change_30d}%`}</S.TableData>
+                  <S.TableData>{`${priceData?.percent_change_1y}%`}</S.TableData>
+                </S.TableRow>
               </tbody>
-              </TableContainer>
-          </PriceTableWrapper>
+              </S.TableContainer>
+          </S.PriceTableWrapper>
         </>
       )}
     </>
@@ -54,42 +55,3 @@ const Price = ({ coinId }: PriceProps) => {
 };
 
 export default Price;
-
-const PriceTitle = styled.h3`
-  padding: 10px;
-  font-size: 24px;
-  font-weight: 700;
-  color: ${props => props.theme.accentColor2};
-`;
-
-const PriceTableWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`
-
-const TableContainer = styled.div`
-  width: 500px;
-  margin-top: 20px;
-  border-collapse: collapse;
-`;
-
-const TableHeader = styled.th`
-  padding: 15px;
-  text-align: center;
-  font-weight: 700;
-  color: ${props => props.theme.accentColor};
-`;
-
-const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-`;
-
-const TableData = styled.td`
-  border-top: 1px solid #868686;
-  padding: 15px;
-  text-align: center;
-`;

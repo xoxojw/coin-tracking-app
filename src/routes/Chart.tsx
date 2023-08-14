@@ -1,8 +1,10 @@
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../libs/service/api";
 import ApexChart from "react-apexcharts";
-import { styled } from "styled-components";
+
 import { thousandsCommaFormatter } from "../libs/helper/comma";
+
+import * as S from "../styles/Chart.style";
 
 interface ChartProps {
   coinId: string;
@@ -34,7 +36,7 @@ const Chart = ({ coinId }: ChartProps) => {
         "Loading chart..."
       ) : (
         <>
-          <ChartTitle>Closing Price</ChartTitle>
+          <S.ChartTitle>Closing Price</S.ChartTitle>
           <ApexChart
             type="line"
             series={[
@@ -96,10 +98,3 @@ const Chart = ({ coinId }: ChartProps) => {
 };
 
 export default Chart;
-
-const ChartTitle = styled.h3`
-  padding: 10px;
-  font-size: 24px;
-  font-weight: 700;
-  color: ${props => props.theme.accentColor2};
-`
