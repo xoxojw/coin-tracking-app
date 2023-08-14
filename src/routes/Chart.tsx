@@ -4,6 +4,9 @@ import ApexChart from "react-apexcharts";
 
 import { thousandsCommaFormatter } from "../libs/helper/comma";
 
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../recoil/atoms";
+
 import * as S from "../styles/Chart.style";
 
 interface ChartProps {
@@ -22,6 +25,7 @@ interface IHistoryData {
 }
 
 const Chart = ({ coinId }: ChartProps) => {
+  const isDark = useRecoilValue(isDarkAtom);
   // console.log(coinId);
   const { isLoading, data } = useQuery<IHistoryData[]>(
     ["history", coinId],
@@ -47,7 +51,7 @@ const Chart = ({ coinId }: ChartProps) => {
             ]}
             options={{
               theme: {
-                mode: "dark",
+                mode: isDark ? "dark" : "light",
               },
               chart: {
                 height: 500,
