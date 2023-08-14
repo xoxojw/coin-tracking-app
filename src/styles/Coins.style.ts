@@ -42,13 +42,14 @@ export const Coin = styled.li`
   border-radius: 10px;
   display: block;
   align-items: center;
+  transition: all 0.2s ease-in-out;
   a {
     padding: 20px;
-    transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
   }
   &:hover {
+    transform: scale(1.02);
     a {
       color: ${props => props.theme.accentColor};
       transform: scale(1.01);

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
 import { ThemeProvider } from 'styled-components';
 import { darkTheme, lightTheme } from './styles/theme';
 import GlobalStyle from "./styles/GlobalStyle";
 import Router from "./routes/Router";
+
 import styled from "styled-components";
+import ToggleButton from "react-dark-mode-toggle";
 
 const App = () => {
   const [isDark, setIsDark] = useState(false);
@@ -13,7 +14,12 @@ const App = () => {
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
         <GlobalStyle />
-        <ToggleButton onClick={toggleDark}>{isDark ? "🌞" : "🌙"}</ToggleButton>
+        <DarkModeToggleBtn
+          onChange={toggleDark}
+          checked={isDark}
+          size={60}
+          speed={1.5}
+        />
         <Router />
       </ThemeProvider>
     </>
@@ -22,13 +28,8 @@ const App = () => {
 
 export default App;
 
-const ToggleButton = styled.button`
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  margin: 0.5em;
-  border: none;
-  background-color: transparent;
-  font-size: 24px;
-  cursor: pointer;
+const DarkModeToggleBtn = styled(ToggleButton)`
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
 `
