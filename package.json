@@ -18,6 +18,7 @@
     "@types/styled-components": "^5.1.26",
     "apexcharts": "^3.41.1",
     "axios": "^1.4.0",
+    "gh-pages": "^6.0.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dark-mode-toggle": "^0.2.0",
@@ -39,7 +40,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "predeploy": "yarn build"
   },
   "eslintConfig": {
     "extends": [
@@ -58,5 +61,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "https://xoxojw.github.io/coin-tracking-app"
 }

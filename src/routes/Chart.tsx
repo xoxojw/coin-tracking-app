@@ -38,7 +38,7 @@ const Chart = ({ coinId }: ChartProps) => {
 	const chartData = exceptData?.map((v) => {
 		return {
 			x: chartTimestamp(v.time_close),
-			y: [v.open, v.high, v.low, v.close].map((i) => priceFormatter(Number(i))),
+			y: [v.open, v.high, v.low, v.close],
 		};
 	});
 	console.log(chartData);
